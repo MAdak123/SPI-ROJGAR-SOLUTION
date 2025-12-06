@@ -1,0 +1,2629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPI Rojgar Solution - AI Powered Job Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- APP CONFIGURATION -->
+    <script>
+        const APP_CONFIG = {
+            appName: "SPI Rojgar Solution",
+            primaryColor: "#1a237e",
+            secondaryColor: "#0d47a1",
+            accentColor: "#ff9800",
+            userFullName: "",
+            defaultLogo: "https://raw.githubusercontent.com/MAdak123/SPI-ROJGAR-SOLUTION/refs/heads/main/logo.png",
+            jobApplicationBaseUrl: "https://spirojgar.com/apply",
+            apiBaseUrl: "https://api.spirojgar.com",
+            companyName: "SPI Rojgar Solution Pvt. Ltd."
+        };
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        }
+
+        :root {
+            --primary: #1a237e;
+            --primary-light: #283593;
+            --secondary: #0d47a1;
+            --accent: #ff9800;
+            --accent-dark: #f57c00;
+            --light: #f5f7fa;
+            --dark: #1a1a1a;
+            --gray: #666;
+            --light-gray: #e0e0e0;
+            --success: #4caf50;
+            --danger: #f44336;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+        }
+
+        .splash-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            animation: fadeIn 1s ease;
+        }
+
+        .splash-icon {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .splash-text {
+            text-align: center;
+            color: white;
+        }
+
+        .splash-text h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .splash-text h2 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            opacity: 0.95;
+            letter-spacing: 0.5px;
+        }
+
+        .splash-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin-top: 50px;
+            overflow: hidden;
+        }
+
+        .splash-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            border-radius: 3px;
+            animation: smoothLoading 2.5s ease-in-out forwards;
+        }
+
+        /* Main App */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .app-header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+        }
+
+        .app-logo-icon {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 12px rgba(26, 35, 126, 0.15);
+            padding: 8px;
+        }
+
+        .app-logo-image {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .app-logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .app-logo-text span {
+            color: var(--accent);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        /* Notification System */
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .notification-bell {
+            position: relative;
+            background: none;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .notification-bell:hover {
+            background-color: rgba(26, 35, 126, 0.1);
+            transform: scale(1.05);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid white;
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 400px;
+            max-height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .notification-dropdown.show {
+            display: flex;
+            animation: slideDown 0.3s ease;
+        }
+
+        .notification-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .mark-read-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .mark-read-btn:hover {
+            background: rgba(26, 35, 126, 0.1);
+        }
+
+        .notification-list {
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .notification-item {
+            padding: 18px;
+            border-bottom: 1px solid rgba(224, 224, 224, 0.5);
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .notification-item.unread {
+            background-color: rgba(26, 35, 126, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(26, 35, 126, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .notification-message {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .notification-time {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            background: rgba(26, 35, 126, 0.05);
+        }
+
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .profile-info h4 {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 3px;
+        }
+
+        .profile-info p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 60px 20px;
+            background: linear-gradient(rgba(26, 35, 126, 0.92), rgba(13, 71, 161, 0.88)), 
+                        url('https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            text-align: center;
+        }
+
+        .search-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .search-title {
+            color: white;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .search-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.4rem;
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .google-like-search {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 22px 30px;
+            padding-right: 80px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            outline: none;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .search-input:focus {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            background: white;
+        }
+
+        .search-input::placeholder {
+            color: #777;
+        }
+
+        .search-lens {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1.4rem;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .search-lens:hover {
+            background: var(--accent-dark);
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+        }
+
+        /* AI Resume Builder */
+        .resume-builder {
+            display: none;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .resume-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .resume-header h2 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .resume-header p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 25px;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.2);
+        }
+
+        .resume-form {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+            background: #fcfcff;
+        }
+
+        .form-textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        /* File input styling */
+        input[type="file"] {
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        input[type="file"]::file-selector-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: var(--primary-light);
+        }
+
+        .profile-image-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 10px auto;
+            border: 3px solid var(--primary);
+            display: none;
+        }
+
+        .profile-image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .skill-tag {
+            background: rgba(26, 35, 126, 0.1);
+            color: var(--primary);
+            padding: 10px 18px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .skill-tag i {
+            cursor: pointer;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .skill-tag i:hover {
+            opacity: 1;
+            color: var(--danger);
+        }
+
+        .add-skill {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .add-skill input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+
+        .add-skill button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            min-width: 120px;
+        }
+
+        .add-skill button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn {
+            padding: 18px 45px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 180px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 5px 15px rgba(26, 35, 126, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(26, 35, 126, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(26, 35, 126, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Job Matching Section */
+        .job-matching {
+            display: none;
+            max-width: 1400px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .matching-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .matching-header h2 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .match-score {
+            font-size: 1.4rem;
+            color: var(--success);
+            font-weight: 700;
+            background: rgba(76, 175, 80, 0.1);
+            padding: 12px 35px;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.1);
+        }
+
+        .categories-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .category-tab {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            box-shadow: var(--shadow);
+            color: var(--gray);
+        }
+
+        .category-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(26, 35, 126, 0.3);
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .job-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .job-card.hot {
+            border-left: 6px solid var(--accent);
+        }
+
+        .job-card.new {
+            border-left: 6px solid var(--success);
+        }
+
+        .job-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        .hot-badge {
+            background: rgba(255, 152, 0, 0.15);
+            color: var(--accent-dark);
+        }
+
+        .new-badge {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+
+        .urgent-badge {
+            background: rgba(244, 67, 54, 0.15);
+            color: var(--danger);
+            animation: pulse 1.5s infinite;
+        }
+
+        .job-content {
+            padding: 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .job-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .job-company {
+            color: var(--dark);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .job-company i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .job-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-meta i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .job-salary {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin: 15px 0;
+        }
+
+        .job-match {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .match-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .match-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #8bc34a);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .match-percentage {
+            font-weight: 700;
+            color: var(--success);
+            min-width: 50px;
+        }
+
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .job-tag {
+            background: rgba(26, 35, 126, 0.1);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        .apply-btn {
+            flex: 1;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .apply-btn:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+        }
+
+        .save-btn {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 16px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .save-btn:hover {
+            background: rgba(26, 35, 126, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .save-btn.saved {
+            background: rgba(26, 35, 126, 0.1);
+            color: var(--primary);
+        }
+
+        /* Real-time Vacancies */
+        .real-time-section {
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.05), rgba(13, 71, 161, 0.05));
+            padding: 50px 40px;
+            border-radius: 25px;
+            margin-top: 60px;
+            border: 2px solid rgba(26, 35, 126, 0.1);
+        }
+
+        .real-time-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .real-time-header h3 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--danger);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .vacancies-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .vacancy-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+        }
+
+        .vacancy-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .vacancy-info h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .vacancy-info p {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .vacancy-time {
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 0.95rem;
+            background: rgba(244, 67, 54, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        /* Notification Alert */
+        .notification-alert {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            max-width: 400px;
+            z-index: 1000;
+            display: none;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 6px solid var(--accent);
+        }
+
+        .notification-alert.show {
+            display: block;
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification-alert-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .notification-alert-header i {
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        .notification-alert-header h4 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .notification-alert-message {
+            color: var(--dark);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .notification-alert-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(26, 35, 126, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .app-footer {
+            background: var(--primary);
+            color: white;
+            padding: 70px 20px 30px;
+            margin-top: 100px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-description {
+            opacity: 0.8;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            max-width: 300px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .footer-column h4 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-link {
+            margin-bottom: 15px;
+        }
+
+        .footer-link a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-link a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .footer-link i {
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes smoothLoading {
+            0% { width: 0%; opacity: 0.5; }
+            50% { width: 60%; opacity: 1; }
+            100% { width: 100%; opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 152, 0, 0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .search-title {
+                font-size: 2.8rem;
+            }
+            
+            .jobs-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+            
+            .vacancies-list {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .notification-dropdown {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .splash-icon {
+                width: 180px;
+                height: 180px;
+                padding: 25px;
+            }
+            
+            .splash-text h1 {
+                font-size: 3rem;
+            }
+            
+            .splash-text h2 {
+                font-size: 1.8rem;
+            }
+            
+            .search-title {
+                font-size: 2.3rem;
+            }
+            
+            .search-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .resume-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .matching-header h2 {
+                font-size: 2.2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .notification-dropdown {
+                width: 300px;
+                right: -50px;
+            }
+            
+            .header-content {
+                flex-wrap: wrap;
+            }
+            
+            .header-controls {
+                order: 3;
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #eee;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .splash-icon {
+                width: 180px;
+                height: 180px;
+                padding: 25px;
+            }
+            
+            .app-logo-text {
+                font-size: 1.6rem;
+            }
+            
+            .search-input {
+                padding: 18px 25px;
+                font-size: 1rem;
+            }
+            
+            .search-lens {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .resume-form {
+                padding: 30px;
+            }
+            
+            .job-content {
+                padding: 20px;
+            }
+            
+            .notification-dropdown {
+                width: calc(100vw - 40px);
+                right: -20px;
+            }
+            
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-logo">
+            <div class="splash-icon">
+                <img id="splashLogo" class="logo-image" src="" alt="SPI Rojgar Solution Logo">
+            </div>
+            <div class="splash-text">
+                <h1>SPI</h1>
+                <h2>Rojgar Solution</h2>
+            </div>
+        </div>
+        <div class="splash-progress">
+            <div class="splash-progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="#" class="app-logo" id="goToHome">
+                    <div class="app-logo-icon">
+                        <img id="headerLogo" class="app-logo-image" src="" alt="SPI Logo">
+                    </div>
+                    <div class="app-logo-text">SPI <span>Rojgar Solution</span></div>
+                </a>
+                
+                <div class="header-controls">
+                    <!-- Notification Bell -->
+                    <div class="notification-wrapper">
+                        <button class="notification-bell" id="notificationBell">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationBadge">0</span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-read-btn" id="markAllRead">Mark All Read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <!-- Notifications will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="user-profile" id="userProfileBtn">
+                        <div class="profile-avatar" id="userAvatar">US</div>
+                        <div class="profile-info">
+                            <h4 id="userFullName"></h4>
+                            <p>Job Seeker</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section" id="searchSection">
+            <div class="search-container">
+                <h1 class="search-title">Find Your Dream Job with AI</h1>
+                <p class="search-subtitle">India's most advanced job search platform powered by artificial intelligence. Get matched with perfect opportunities.</p>
+                
+                <div class="google-like-search">
+                    <input type="text" class="search-input" placeholder="Search for jobs by title, skills, or company..." id="jobSearch">
+                    <button class="search-lens" id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="statsBar" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="stat-number" id="totalJobs">156</div>
+                <div class="stat-label">Jobs Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-number" id="activeAlerts">5</div>
+                <div class="stat-label">Active Alerts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-number" id="matchRate">92%</div>
+                <div class="stat-label">Match Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number" id="newToday">12</div>
+                <div class="stat-label">New Today</div>
+            </div>
+        </div>
+
+        <!-- AI Resume Builder -->
+        <section class="resume-builder" id="resumeBuilder">
+            <div class="resume-header">
+                <h2>AI-Powered Resume Builder</h2>
+                <p>Create a professional resume in minutes. Our AI analyzes your profile and suggests improvements.</p>
+                <div class="ai-badge">
+                    <i class="fas fa-robot"></i>
+                    Powered by Artificial Intelligence
+                </div>
+            </div>
+
+            <div class="resume-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name *</label>
+                        <input type="text" class="form-input" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="dob">Date of Birth *</label>
+                        <input type="date" class="form-input" id="dob" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address *</label>
+                        <input type="email" class="form-input" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number *</label>
+                        <input type="tel" class="form-input" id="phone" placeholder="Enter your phone number" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="address">Current Address</label>
+                        <input type="text" class="form-input" id="address" placeholder="Enter your complete address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="profileImage">Profile Photo (Optional)</label>
+                        <input type="file" class="form-input" id="profileImage" accept="image/*">
+                        <small style="display: block; margin-top: 5px; color: #666; font-size: 0.9rem;">
+                            Upload a professional photo for your profile
+                        </small>
+                        <div class="profile-image-preview" id="imagePreview">
+                            <img id="previewImage" src="" alt="Preview">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="education">Highest Education *</label>
+                        <select class="form-select" id="education" required>
+                            <option value="">Select Qualification</option>
+                            <option value="10th">10th Pass</option>
+                            <option value="12th">12th Pass</option>
+                            <option value="diploma">Diploma</option>
+                            <option value="graduate">Graduate (B.A., B.Sc., B.Com)</option>
+                            <option value="engineering">Engineering (B.Tech/B.E.)</option>
+                            <option value="postgraduate">Post Graduate (M.A., M.Sc., M.Com)</option>
+                            <option value="mba">MBA</option>
+                            <option value="phd">PhD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="field">Field of Study *</label>
+                        <input type="text" class="form-input" id="field" placeholder="e.g. Computer Science, MBA, B.Tech" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Skills *</label>
+                    <div class="skills-container" id="skillsContainer">
+                        <!-- Skills will be added here -->
+                    </div>
+                    <div class="add-skill">
+                        <input type="text" id="newSkill" placeholder="Add a skill (e.g. JavaScript, Digital Marketing)">
+                        <button type="button" id="addSkillBtn">Add Skill</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="experience">Work Experience (Years) *</label>
+                    <select class="form-select" id="experience" required>
+                        <option value="">Select Experience</option>
+                        <option value="0">Fresher (0 years)</option>
+                        <option value="1">1 Year</option>
+                        <option value="2">2 Years</option>
+                        <option value="3">3 Years</option>
+                        <option value="4">4 Years</option>
+                        <option value="5">5+ Years</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="experienceDetails">Experience Details (Optional)</label>
+                    <textarea class="form-textarea" id="experienceDetails" placeholder="Describe your work experience, roles, responsibilities, and achievements"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="languages">Languages Known</label>
+                    <input type="text" class="form-input" id="languages" placeholder="e.g. Hindi, English, Marathi, Gujarati">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="salaryExpectation">Expected Salary (₹ per annum)</label>
+                    <input type="text" class="form-input" id="salaryExpectation" placeholder="e.g. 500000">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelResume">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitResume">
+                        <i class="fas fa-robot"></i> Build Resume & Find Jobs
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Job Matching Section -->
+        <section class="job-matching" id="jobMatching">
+            <div class="matching-header">
+                <h2>Jobs Matched For You</h2>
+                <div class="match-score">
+                    <i class="fas fa-bolt"></i> 95% Profile Match
+                </div>
+            </div>
+
+            <div class="categories-tabs" id="categoriesTabs">
+                <!-- Categories will be added dynamically -->
+            </div>
+
+            <div class="jobs-grid" id="jobsGrid">
+                <!-- Jobs will be added dynamically -->
+            </div>
+
+            <!-- Real-time Vacancies -->
+            <div class="real-time-section">
+                <div class="real-time-header">
+                    <h3>Real-time Vacancies</h3>
+                    <div class="live-badge">
+                        <i class="fas fa-circle"></i> LIVE UPDATES
+                    </div>
+                </div>
+                <div class="vacancies-list" id="vacanciesList">
+                    <!-- Real-time vacancies will be added here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Notification Alert -->
+        <div class="notification-alert" id="notificationAlert">
+            <div class="notification-alert-header">
+                <i class="fas fa-bell"></i>
+                <h4>New Job Alert!</h4>
+            </div>
+            <div class="notification-alert-message" id="notificationAlertMessage">
+                New job matching your profile has been posted.
+            </div>
+            <div class="notification-alert-actions">
+                <button class="btn-secondary" id="dismissNotification">
+                    Dismiss
+                </button>
+                <button class="btn-primary" id="viewNotification">
+                    View Job
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-logo">SPI <span>Rojgar Solution</span></div>
+                    <p class="footer-description">
+                        India's leading AI-powered job search platform connecting millions of job seekers with employers.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Job Seekers</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                Search Jobs
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                AI Resume Builder
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                Job Alerts
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                Career Advice
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Employers</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                Post Jobs
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                Search Resumes
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                Employer Login
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-chevron-right"></i>
+                                Hiring Solutions
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact Us</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link">
+                            <a href="tel:18001234567">
+                                <i class="fas fa-phone"></i>
+                                1800-123-4567
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="mailto:support@spirojgar.com">
+                                <i class="fas fa-envelope"></i>
+                                support@spirojgar.com
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Mumbai, Maharashtra
+                            </a>
+                        </li>
+                        <li class="footer-link">
+                            <a href="#">
+                                <i class="fas fa-globe"></i>
+                                www.spirojgar.com
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 SPI Rojgar Solution. All Rights Reserved. | <a href="#" style="color: rgba(255, 255, 255, 0.8);">Privacy Policy</a> | <a href="#" style="color: rgba(255, 255, 255, 0.8);">Terms of Service</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ===========================================
+        // APP DATA
+        // ===========================================
+        const jobCategories = [
+            { id: 'all', name: 'All Jobs', count: 156, icon: 'fas fa-briefcase' },
+            { id: 'it', name: 'IT & Software', count: 45, icon: 'fas fa-laptop-code' },
+            { id: 'banking', name: 'Banking & Finance', count: 32, icon: 'fas fa-university' },
+            { id: 'sales', name: 'Sales & Marketing', count: 28, icon: 'fas fa-chart-line' },
+            { id: 'engineering', name: 'Engineering', count: 24, icon: 'fas fa-cogs' },
+            { id: 'government', name: 'Government Jobs', count: 18, icon: 'fas fa-landmark' },
+            { id: 'healthcare', name: 'Healthcare', count: 15, icon: 'fas fa-heartbeat' },
+            { id: 'education', name: 'Education', count: 12, icon: 'fas fa-graduation-cap' }
+        ];
+
+        const jobsData = [
+            {
+                id: 1,
+                title: 'Senior Software Engineer',
+                company: 'Tech Solutions Pvt Ltd',
+                location: 'Mumbai, Maharashtra',
+                salary: '₹12-18 LPA',
+                experience: '3-5 years',
+                type: 'Full Time',
+                category: 'it',
+                tags: ['React', 'Node.js', 'MongoDB', 'AWS', 'TypeScript'],
+                posted: '2 hours ago',
+                match: 95,
+                hot: true,
+                new: true,
+                urgent: false,
+                applyUrl: 'https://spirojgar.com/apply/tech-solutions-001',
+                description: 'Looking for a Senior Software Engineer with strong React and Node.js experience.'
+            },
+            {
+                id: 2,
+                title: 'Bank Relationship Manager',
+                company: 'State Bank of India',
+                location: 'Delhi, NCR',
+                salary: '₹8-12 LPA',
+                experience: '2-4 years',
+                type: 'Full Time',
+                category: 'banking',
+                tags: ['Banking', 'Sales', 'Relationship', 'Finance', 'Customer Service'],
+                posted: '5 hours ago',
+                match: 88,
+                hot: false,
+                new: true,
+                urgent: true,
+                applyUrl: 'https://spirojgar.com/apply/sbi-relationship-manager',
+                description: 'Hiring Relationship Managers for SBI with excellent sales and communication skills.'
+            },
+            {
+                id: 3,
+                title: 'Digital Marketing Manager',
+                company: 'Marketing Pro Agency',
+                location: 'Bangalore, Karnataka',
+                salary: '₹9-15 LPA',
+                experience: '4-6 years',
+                type: 'Full Time',
+                category: 'sales',
+                tags: ['SEO', 'Social Media', 'Content', 'Google Ads', 'Analytics'],
+                posted: '1 day ago',
+                match: 82,
+                hot: true,
+                new: false,
+                urgent: false,
+                applyUrl: 'https://spirojgar.com/apply/marketing-pro-001',
+                description: 'Digital Marketing Manager with expertise in SEO and social media marketing.'
+            },
+            {
+                id: 4,
+                title: 'Civil Engineer',
+                company: 'Infra Build Constructions',
+                location: 'Pune, Maharashtra',
+                salary: '₹6-10 LPA',
+                experience: '2-5 years',
+                type: 'Full Time',
+                category: 'engineering',
+                tags: ['Civil', 'Construction', 'AutoCAD', 'Site Management', 'Project Management'],
+                posted: '2 days ago',
+                match: 76,
+                hot: false,
+                new: false,
+                urgent: false,
+                applyUrl: 'https://spirojgar.com/apply/infra-build-001',
+                description: 'Civil Engineer with experience in construction and site management.'
+            },
+            {
+                id: 5,
+                title: 'Bank Clerk',
+                company: 'SBI Regional Office',
+                location: 'Chennai, Tamil Nadu',
+                salary: '₹3-5 LPA',
+                experience: '0-2 years',
+                type: 'Full Time',
+                category: 'government',
+                tags: ['Banking', 'Clerical', 'Customer Service', 'Finance', 'Documentation'],
+                posted: '3 hours ago',
+                match: 92,
+                hot: true,
+                new: true,
+                urgent: false,
+                applyUrl: 'https://spirojgar.com/apply/sbi-clerk-001',
+                description: 'Bank Clerk positions available at SBI for freshers and experienced candidates.'
+            },
+            {
+                id: 6,
+                title: 'Data Scientist',
+                company: 'Analytics Pro Ltd',
+                location: 'Hyderabad, Telangana',
+                salary: '₹15-25 LPA',
+                experience: '3-6 years',
+                type: 'Full Time',
+                category: 'it',
+                tags: ['Python', 'Machine Learning', 'AI', 'Data Analysis', 'SQL'],
+                posted: '8 hours ago',
+                match: 89,
+                hot: true,
+                new: true,
+                urgent: true,
+                applyUrl: 'https://spirojgar.com/apply/analytics-pro-001',
+                description: 'Data Scientist with strong Python and machine learning skills.'
+            }
+        ];
+
+        const realTimeVacancies = [
+            { id: 1, title: 'IT Support Engineer', company: 'Tech Support Ltd', time: 'Just now' },
+            { id: 2, title: 'Accounts Executive', company: 'Finance Solutions', time: '2 min ago' },
+            { id: 3, title: 'Sales Executive', company: 'Retail Corp', time: '5 min ago' },
+            { id: 4, title: 'HR Recruiter', company: 'Talent Hub', time: '10 min ago' },
+            { id: 5, title: 'Web Developer', company: 'Digital Creations', time: '15 min ago' }
+        ];
+
+        // Notifications System
+        let notifications = [
+            {
+                id: 1,
+                title: 'New Job Match',
+                message: 'Senior Software Engineer at Tech Solutions matches your profile 95%',
+                time: '10 min ago',
+                read: false,
+                icon: 'fas fa-briefcase',
+                type: 'job_match'
+            },
+            {
+                id: 2,
+                title: 'Application Viewed',
+                message: 'FinCorp Bank has viewed your application for Data Analyst',
+                time: '2 hours ago',
+                read: false,
+                icon: 'fas fa-eye',
+                type: 'application'
+            },
+            {
+                id: 3,
+                title: 'Interview Scheduled',
+                message: 'Interview with WebCraft Studios scheduled for Friday, 10 AM',
+                time: '1 day ago',
+                read: true,
+                icon: 'fas fa-calendar-check',
+                type: 'interview'
+            },
+            {
+                id: 4,
+                title: 'Profile Strength',
+                message: 'Your profile is 85% complete. Add skills to improve visibility',
+                time: '2 days ago',
+                read: true,
+                icon: 'fas fa-chart-line',
+                type: 'profile'
+            },
+            {
+                id: 5,
+                title: 'New Feature Alert',
+                message: 'Try our new AI Resume Builder for better job matches',
+                time: '3 days ago',
+                read: true,
+                icon: 'fas fa-robot',
+                type: 'system'
+            }
+        ];
+
+        // App State
+        let savedJobs = [1, 3];
+        let userSkills = ['JavaScript', 'HTML', 'CSS', 'Communication', 'Teamwork'];
+        let userProfileImage = null;
+
+        // ===========================================
+        // DOM ELEMENTS
+        // ===========================================
+        const splashScreen = document.getElementById('splashScreen');
+        const appContainer = document.getElementById('appContainer');
+        const searchSection = document.getElementById('searchSection');
+        const resumeBuilder = document.getElementById('resumeBuilder');
+        const jobMatching = document.getElementById('jobMatching');
+        const statsBar = document.getElementById('statsBar');
+        const searchButton = document.getElementById('searchButton');
+        const submitResume = document.getElementById('submitResume');
+        const cancelResume = document.getElementById('cancelResume');
+        const addSkillBtn = document.getElementById('addSkillBtn');
+        const newSkillInput = document.getElementById('newSkill');
+        const skillsContainer = document.getElementById('skillsContainer');
+        const categoriesTabs = document.getElementById('categoriesTabs');
+        const jobsGrid = document.getElementById('jobsGrid');
+        const vacanciesList = document.getElementById('vacanciesList');
+        const profileImageInput = document.getElementById('profileImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        
+        // User profile elements
+        const userAvatar = document.getElementById('userAvatar');
+        const userFullName = document.getElementById('userFullName');
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        
+        // Notification elements
+        const notificationBell = document.getElementById('notificationBell');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const notificationList = document.getElementById('notificationList');
+        const markAllRead = document.getElementById('markAllRead');
+        const notificationAlert = document.getElementById('notificationAlert');
+        const dismissNotification = document.getElementById('dismissNotification');
+        const viewNotification = document.getElementById('viewNotification');
+        const notificationAlertMessage = document.getElementById('notificationAlertMessage');
+
+        // Stats elements
+        const totalJobsEl = document.getElementById('totalJobs');
+        const activeAlertsEl = document.getElementById('activeAlerts');
+        const matchRateEl = document.getElementById('matchRate');
+        const newTodayEl = document.getElementById('newToday');
+
+        // ===========================================
+        // INITIALIZE APP
+        // ===========================================
+        function initApp() {
+            // Load saved user data
+            const savedName = localStorage.getItem('spi_user_name') || APP_CONFIG.userFullName;
+            const savedImage = localStorage.getItem('spi_user_image');
+            
+            if (savedImage) {
+                userProfileImage = savedImage;
+                userAvatar.innerHTML = `<img src="${savedImage}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else if (savedName && savedName.trim() !== '') {
+                const initials = getInitials(savedName);
+                userAvatar.textContent = initials;
+            } else {
+                userAvatar.textContent = 'US';
+            }
+            
+            userFullName.textContent = savedName || 'User';
+            
+            // Load logo
+            loadLogo();
+            
+            // Initialize skills
+            initializeSkills();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Show splash screen for 3 seconds
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    appContainer.style.display = 'block';
+                    showSearchSection();
+                    startRealTimeUpdates();
+                    updateNotificationBadge();
+                    renderNotifications();
+                }, 500);
+            }, 3000);
+        }
+
+        // ===========================================
+        // LOGO MANAGEMENT
+        // ===========================================
+        function loadLogo() {
+            const logoUrl = APP_CONFIG.defaultLogo;
+            const splashLogo = document.getElementById('splashLogo');
+            const headerLogo = document.getElementById('headerLogo');
+            
+            splashLogo.src = logoUrl;
+            splashLogo.onerror = () => {
+                splashLogo.src = 'https://img.icons8.com/color/96/000000/briefcase.png';
+            };
+            
+            headerLogo.src = logoUrl;
+            headerLogo.onerror = () => {
+                headerLogo.src = 'https://img.icons8.com/color/48/000000/briefcase.png';
+            };
+        }
+
+        // ===========================================
+        // USER PROFILE MANAGEMENT
+        // ===========================================
+        function updateUserName(name, image = null) {
+            APP_CONFIG.userFullName = name;
+            userFullName.textContent = name || 'User';
+            
+            // Update avatar with image or initials
+            if (image) {
+                userProfileImage = image;
+                userAvatar.innerHTML = `<img src="${image}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                localStorage.setItem('spi_user_image', image);
+            } else {
+                const initials = getInitials(name);
+                userAvatar.textContent = initials || 'US';
+                userAvatar.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+                userAvatar.style.color = 'white';
+                localStorage.removeItem('spi_user_image');
+            }
+            
+            localStorage.setItem('spi_user_name', name || '');
+            document.title = name ? `${name} | ${APP_CONFIG.appName}` : APP_CONFIG.appName;
+        }
+
+        function getInitials(name) {
+            if (!name || name.trim() === '') return 'US';
+            return name.split(' ')
+                .map(part => part[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+        }
+
+        // ===========================================
+        // NOTIFICATION SYSTEM
+        // ===========================================
+        function updateNotificationBadge() {
+            const unreadCount = notifications.filter(n => !n.read).length;
+            notificationBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            notificationBadge.style.display = unreadCount > 0 ? 'flex' : 'none';
+        }
+
+        function renderNotifications() {
+            notificationList.innerHTML = '';
+            
+            if (notifications.length === 0) {
+                notificationList.innerHTML = `
+                    <div class="notification-item" style="text-align: center; color: #666;">
+                        <div>No notifications yet</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            notifications.forEach(notification => {
+                const notificationItem = document.createElement('div');
+                notificationItem.className = `notification-item ${notification.read ? '' : 'unread'}`;
+                notificationItem.dataset.id = notification.id;
+                notificationItem.innerHTML = `
+                    <div class="notification-icon">
+                        <i class="${notification.icon}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${notification.title}</div>
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-time">${notification.time}</div>
+                    </div>
+                `;
+                
+                notificationItem.addEventListener('click', () => {
+                    if (!notification.read) {
+                        notification.read = true;
+                        updateNotificationBadge();
+                        renderNotifications();
+                    }
+                    
+                    if (notification.type === 'job_match') {
+                        showJobMatching();
+                    }
+                    
+                    notificationDropdown.classList.remove('show');
+                });
+                
+                notificationList.appendChild(notificationItem);
+            });
+        }
+
+        function addNotification(title, message, type = 'system') {
+            const icons = {
+                job_match: 'fas fa-briefcase',
+                application: 'fas fa-file-alt',
+                interview: 'fas fa-calendar-check',
+                profile: 'fas fa-chart-line',
+                system: 'fas fa-info-circle'
+            };
+            
+            const newNotification = {
+                id: notifications.length + 1,
+                title,
+                message,
+                time: 'Just now',
+                read: false,
+                icon: icons[type] || 'fas fa-info-circle',
+                type
+            };
+            
+            notifications.unshift(newNotification);
+            
+            if (notifications.length > 20) {
+                notifications.pop();
+            }
+            
+            updateNotificationBadge();
+            renderNotifications();
+            showNotificationAlert(title, message);
+        }
+
+        function showNotificationAlert(title, message) {
+            notificationAlertMessage.textContent = message;
+            notificationAlert.classList.add('show');
+            
+            setTimeout(() => {
+                notificationAlert.classList.remove('show');
+            }, 8000);
+        }
+
+        // ===========================================
+        // SKILLS MANAGEMENT
+        // ===========================================
+        function initializeSkills() {
+            skillsContainer.innerHTML = '';
+            userSkills.forEach(skill => {
+                addSkillElement(skill);
+            });
+        }
+
+        function addSkill() {
+            const skill = newSkillInput.value.trim();
+            if (skill && !userSkills.includes(skill)) {
+                userSkills.push(skill);
+                addSkillElement(skill);
+                newSkillInput.value = '';
+                addNotification('Skill Added', `"${skill}" added to your skills list`, 'profile');
+            }
+        }
+
+        function addSkillElement(skill) {
+            const skillElement = document.createElement('div');
+            skillElement.className = 'skill-tag';
+            skillElement.innerHTML = `
+                ${skill}
+                <i class="fas fa-times" onclick="removeSkill('${skill}')"></i>
+            `;
+            skillsContainer.appendChild(skillElement);
+        }
+
+        window.removeSkill = function(skill) {
+            userSkills = userSkills.filter(s => s !== skill);
+            initializeSkills();
+            addNotification('Skill Removed', `"${skill}" removed from your skills list`, 'profile');
+        };
+
+        // ===========================================
+        // IMAGE UPLOAD HANDLING
+        // ===========================================
+        if (profileImageInput) {
+            profileImageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    previewImage.src = '';
+                    imagePreview.style.display = 'none';
+                }
+            });
+        }
+
+        // ===========================================
+        // JOB SYSTEM
+        // ===========================================
+        function renderJobCategories() {
+            categoriesTabs.innerHTML = '';
+            
+            jobCategories.forEach(category => {
+                const tab = document.createElement('div');
+                tab.className = `category-tab ${category.active ? 'active' : ''}`;
+                tab.innerHTML = `
+                    <i class="${category.icon}"></i>
+                    ${category.name} (${category.count})
+                `;
+                tab.dataset.category = category.id;
+                
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.category-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+                    renderJobs(category.id);
+                });
+                
+                categoriesTabs.appendChild(tab);
+            });
+        }
+
+        function renderJobs(categoryId) {
+            jobsGrid.innerHTML = '';
+            
+            let filteredJobs = categoryId === 'all' 
+                ? jobsData 
+                : jobsData.filter(job => job.category === categoryId);
+            
+            filteredJobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = `job-card ${job.hot ? 'hot' : ''} ${job.new ? 'new' : ''}`;
+                
+                let badges = [];
+                if (job.hot) badges.push('<div class="job-badge hot-badge">HOT</div>');
+                if (job.new) badges.push('<div class="job-badge new-badge">NEW</div>');
+                if (job.urgent) badges.push('<div class="job-badge urgent-badge">URGENT</div>');
+                
+                jobCard.innerHTML = `
+                    ${badges.join('')}
+                    <div class="job-content">
+                        <h3 class="job-title">${job.title}</h3>
+                        <p class="job-company"><i class="fas fa-building"></i> ${job.company}</p>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
+                            <span><i class="fas fa-briefcase"></i> ${job.experience}</span>
+                            <span><i class="fas fa-clock"></i> ${job.posted}</span>
+                        </div>
+                        <div class="job-salary">${job.salary}</div>
+                        <div class="job-match">
+                            <div class="match-bar">
+                                <div class="match-fill" style="width: ${job.match}%"></div>
+                            </div>
+                            <div class="match-percentage">${job.match}% Match</div>
+                        </div>
+                        <div class="job-tags">
+                            ${job.tags.map(tag => `<span class="job-tag">${tag}</span>`).join('')}
+                        </div>
+                        <div class="job-actions">
+                            <button class="apply-btn" onclick="applyForJob(${job.id})">
+                                <i class="fas fa-paper-plane"></i> Apply Now
+                            </button>
+                            <button class="save-btn ${savedJobs.includes(job.id) ? 'saved' : ''}" onclick="toggleSaveJob(${job.id})">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                jobsGrid.appendChild(jobCard);
+            });
+        }
+
+        function renderRealTimeVacancies() {
+            vacanciesList.innerHTML = '';
+            
+            realTimeVacancies.forEach(vacancy => {
+                const vacancyItem = document.createElement('div');
+                vacancyItem.className = 'vacancy-item';
+                vacancyItem.innerHTML = `
+                    <div class="vacancy-info">
+                        <h4>${vacancy.title}</h4>
+                        <p>${vacancy.company}</p>
+                    </div>
+                    <div class="vacancy-time">${vacancy.time}</div>
+                `;
+                vacanciesList.appendChild(vacancyItem);
+            });
+        }
+
+        // ===========================================
+        // JOB ACTIONS
+        // ===========================================
+        window.applyForJob = function(jobId) {
+            const job = jobsData.find(j => j.id === jobId);
+            if (job) {
+                window.open(job.applyUrl, '_blank');
+                addNotification('Application Started', `Application for ${job.title} at ${job.company}`, 'application');
+            }
+        };
+
+        window.toggleSaveJob = function(jobId) {
+            const index = savedJobs.indexOf(jobId);
+            const job = jobsData.find(j => j.id === jobId);
+            
+            if (index === -1) {
+                savedJobs.push(jobId);
+                addNotification('Job Saved', `${job.title} saved to your list`, 'job_match');
+            } else {
+                savedJobs.splice(index, 1);
+                addNotification('Job Removed', `${job.title} removed from saved list`, 'profile');
+            }
+            
+            renderJobs(document.querySelector('.category-tab.active').dataset.category);
+        };
+
+        // ===========================================
+        // RESUME BUILDER
+        // ===========================================
+        function submitResumeForm() {
+            const fullName = document.getElementById('fullName').value;
+            const dob = document.getElementById('dob').value;
+            const education = document.getElementById('education').value;
+            const field = document.getElementById('field').value;
+            const experience = document.getElementById('experience').value;
+            const profileImageInput = document.getElementById('profileImage');
+
+            if (!fullName || !dob || !education || !field || !experience) {
+                addNotification('Form Incomplete', 'Please fill all required fields', 'system');
+                return;
+            }
+
+            // Handle profile image upload
+            if (profileImageInput.files && profileImageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profileImage = e.target.result;
+                    updateUserName(fullName, profileImage);
+                    
+                    // Continue with form submission
+                    showJobMatching();
+                    updateStats();
+                    addNotification('Resume Created', 'AI is finding matching jobs for you...', 'profile');
+                    
+                    setTimeout(() => {
+                        addNotification('Jobs Found', 'AI found 15 jobs matching your profile', 'job_match');
+                    }, 1500);
+                };
+                reader.readAsDataURL(profileImageInput.files[0]);
+            } else {
+                // No image provided
+                updateUserName(fullName);
+                
+                // Continue with form submission
+                showJobMatching();
+                updateStats();
+                addNotification('Resume Created', 'AI is finding matching jobs for you...', 'profile');
+                
+                setTimeout(() => {
+                    addNotification('Jobs Found', 'AI found 15 jobs matching your profile', 'job_match');
+                }, 1500);
+            }
+        }
+
+        // ===========================================
+        // STATS UPDATES
+        // ===========================================
+        function updateStats() {
+            totalJobsEl.textContent = jobsData.length;
+            activeAlertsEl.textContent = notifications.filter(n => !n.read).length;
+            newTodayEl.textContent = jobsData.filter(j => j.new).length;
+            
+            const matchRate = Math.min(95, Math.floor((savedJobs.length / jobsData.length) * 100) + 80);
+            matchRateEl.textContent = `${matchRate}%`;
+        }
+
+        // ===========================================
+        // REAL-TIME UPDATES
+        // ===========================================
+        function startRealTimeUpdates() {
+            setInterval(updateRealTimeVacancies, 30000);
+            setInterval(showRandomJobAlert, 45000);
+            setInterval(updateStats, 60000);
+        }
+
+        function updateRealTimeVacancies() {
+            const jobTitles = [
+                'Frontend Developer', 'Backend Engineer', 'Full Stack Developer',
+                'UI/UX Designer', 'DevOps Engineer', 'Data Scientist',
+                'Business Analyst', 'Project Manager', 'Quality Analyst',
+                'Mobile App Developer', 'Cloud Architect', 'Security Analyst'
+            ];
+            
+            const companies = [
+                'Tech Solutions', 'Digital Innovations', 'Cloud Systems',
+                'Data Analytics Pro', 'Web Creations', 'Mobile First',
+                'AI Solutions', 'Cyber Security Ltd', 'IT Services',
+                'Software Developers', 'Tech Hub', 'Innovation Labs'
+            ];
+            
+            const newVacancy = {
+                id: realTimeVacancies.length + 1,
+                title: jobTitles[Math.floor(Math.random() * jobTitles.length)],
+                company: companies[Math.floor(Math.random() * companies.length)],
+                time: 'Just now'
+            };
+            
+            realTimeVacancies.unshift(newVacancy);
+            
+            if (realTimeVacancies.length > 5) {
+                realTimeVacancies.pop();
+            }
+            
+            if (jobMatching.style.display === 'block') {
+                renderRealTimeVacancies();
+            }
+        }
+
+        function showRandomJobAlert() {
+            const job = jobsData[Math.floor(Math.random() * jobsData.length)];
+            addNotification('New Job Alert', `${job.title} at ${job.company} - ${job.match}% match`, 'job_match');
+        }
+
+        // ===========================================
+        // VIEW MANAGEMENT
+        // ===========================================
+        function showSearchSection() {
+            searchSection.style.display = 'block';
+            resumeBuilder.style.display = 'none';
+            jobMatching.style.display = 'none';
+            statsBar.style.display = 'none';
+        }
+
+        function showResumeBuilder() {
+            searchSection.style.display = 'none';
+            resumeBuilder.style.display = 'block';
+            jobMatching.style.display = 'none';
+            statsBar.style.display = 'none';
+        }
+
+        function showJobMatching() {
+            searchSection.style.display = 'none';
+            resumeBuilder.style.display = 'none';
+            jobMatching.style.display = 'block';
+            statsBar.style.display = 'grid';
+            
+            renderJobCategories();
+            renderJobs('all');
+            renderRealTimeVacancies();
+            updateStats();
+        }
+
+        // ===========================================
+        // EVENT LISTENERS
+        // ===========================================
+        function setupEventListeners() {
+            // Search button
+            searchButton.addEventListener('click', () => {
+                const query = document.getElementById('jobSearch').value.trim();
+                if (query) {
+                    showResumeBuilder();
+                } else {
+                    addNotification('Search Empty', 'Please enter a job search query', 'system');
+                }
+            });
+
+            // Enter key in search
+            document.getElementById('jobSearch').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchButton.click();
+                }
+            });
+
+            // Resume form
+            submitResume.addEventListener('click', submitResumeForm);
+            cancelResume.addEventListener('click', () => showSearchSection());
+
+            // Skills
+            addSkillBtn.addEventListener('click', addSkill);
+            newSkillInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addSkill();
+                }
+            });
+
+            // Notifications
+            notificationBell.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notificationDropdown.classList.toggle('show');
+            });
+
+            markAllRead.addEventListener('click', () => {
+                notifications.forEach(n => n.read = true);
+                updateNotificationBadge();
+                renderNotifications();
+            });
+
+            dismissNotification.addEventListener('click', () => {
+                notificationAlert.classList.remove('show');
+            });
+
+            viewNotification.addEventListener('click', () => {
+                notificationAlert.classList.remove('show');
+                showJobMatching();
+            });
+
+            // Close notification dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!notificationBell.contains(e.target) && !notificationDropdown.contains(e.target)) {
+                    notificationDropdown.classList.remove('show');
+                }
+            });
+
+            // Go to home
+            document.getElementById('goToHome').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSearchSection();
+            });
+
+            // User profile click
+            userProfileBtn.addEventListener('click', () => {
+                addNotification('Profile', 'View and edit your profile settings', 'profile');
+            });
+        }
+
+        // ===========================================
+        // INITIALIZE APP
+        // ===========================================
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
