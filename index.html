@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SPI Rojgar Solution</title>
-    <style>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-/* === MAKE RESPONSIVE - ADD THESE 4 LINES === */
+
+<style>
+/* === RESET === */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    width: 100%;
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
     max-width: 100%;
     overflow-x: hidden;
 }
@@ -18,236 +23,217 @@ body {
 .container {
     width: 95%;
     margin: 0 auto;
-    padding: 10px;
 }
-        /* === BASIC RESET === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            padding: 20px;
-        }
-        
-        /* === HEADER === */
-        .header {
-            background: #2E86AB;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-right: 15px;
-            border: 3px solid white;
-        }
-        
-        .app-name h1 {
-            font-size: 24px;
-        }
-        
-        .app-name p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        /* === BELL ICON === */
-        .bell-icon {
-            margin-left: auto;
-            font-size: 24px;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .bell-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: red;
-            color: white;
-            font-size: 12px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* === SEARCH BAR === */
-        .search-bar {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 30px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .search-bar:hover {
-            background: #e8f4f8;
-        }
-        
-        /* === SECTIONS === */
-        .section {
-            display: none;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .active {
-            display: block;
-        }
-        
-        /* === FORM === */
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        
-        /* === BUTTONS === */
-        .button {
-            background: #2E86AB;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-            width: 100%;
-        }
-        
-        .button:hover {
-            background: #1a5f7a;
-        }
-        
-        .back-btn {
-            background: #666;
-            margin-top: 20px;
-        }
-        
-        /* === JOB CARD === */
-        .job-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            background: white;
-        }
-        
-        .job-title {
-            color: #2E86AB;
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-        
-        .match-badge {
-            background: green;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            float: right;
-        }
-        
-        .apply-btn {
-            background: #4CAF50;
-            width: auto;
-            margin-top: 10px;
-        }
-        
-        /* === NOTIFICATIONS === */
-        .notification {
-            border-left: 4px solid #2E86AB;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #f9f9f9;
-        }
-/* Add this to make text readable on mobile */
+
+/* === HEADER === */
+.header {
+    background: #2E86AB;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 3px solid white;
+}
+
+.app-name h1 {
+    font-size: 22px;
+}
+
+.app-name p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.bell-icon {
+    margin-left: auto;
+    font-size: 26px;
+    cursor: pointer;
+    position: relative;
+}
+
+.bell-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* === SEARCH BAR === */
+.search-bar {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 30px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 18px;
+}
+
+.search-bar:hover {
+    background: #e8f4f8;
+}
+
+/* === SECTION === */
+.section {
+    display: none;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.section.active {
+    display: block;
+}
+
+/* === FORM === */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: block;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+/* === BUTTON === */
+.button {
+    width: 100%;
+    padding: 12px;
+    background: #2E86AB;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.button:hover {
+    background: #1a5f7a;
+}
+
+.back-btn {
+    background: #666;
+}
+
+/* === JOB CARD === */
+.job-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background: white;
+}
+
+.job-title {
+    color: #2E86AB;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.match-badge {
+    float: right;
+    background: #28a745;
+    color: white;
+    padding: 3px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+}
+
+.apply-btn {
+    width: auto;
+    margin-top: 10px;
+    background: #28a745;
+}
+
+/* === NOTIFICATION === */
+.notification {
+    border-left: 4px solid #2E86AB;
+    background: #f9f9f9;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+/* === MOBILE FONT FIX === */
 @media (max-width: 600px) {
-    body {
+    body, input, select, textarea, button {
         font-size: 16px;
-    }
-    
-    .btn, input, select {
-        font-size: 16px;
-        padding: 12px;
-        min-height: 44px;
     }
 }
-    </style>
+</style>
 </head>
+
 <body>
 <div class="container">
-<!-- === HEADER WITH LOGO === -->
+
+<!-- HEADER -->
 <div class="header">
-    <!-- YOUR LOGO HERE - Change "logo.png" to your logo file name -->
     <img src="logo.png" class="logo" alt="SPI Logo">
     
     <div class="app-name">
         <h1>SPI Rojgar Solution</h1>
         <p>Your Gateway to Dream Jobs</p>
     </div>
-    
+
     <div class="bell-icon" onclick="showSection('notifications')">
         🔔
         <span class="bell-count">3</span>
     </div>
 </div>
 
-<!-- === SEARCH BAR === -->
+<!-- SEARCH BAR -->
 <div class="search-bar" onclick="showSection('resume')">
-    🔍 Click here to build AI Resume and search jobs
+    🔍 Click here to build AI Resume & Search Jobs
 </div>
 
-<!-- === HOME SECTION (shown first) === -->
+<!-- HOME -->
 <div id="home" class="section active">
     <h2>Welcome!</h2>
-    <p>Build your AI resume and get matched with perfect jobs.</p>
-    <p>Click the search bar above to start.</p>
+    <p>Build your AI-powered resume and get matched with the best jobs.</p>
 </div>
 
-<!-- === RESUME BUILDER SECTION === -->
+<!-- RESUME BUILDER -->
 <div id="resume" class="section">
     <h2>AI Resume Builder</h2>
-    
+
     <form id="resumeForm" onsubmit="buildResume(); return false;">
         <div class="form-group">
             <label>Full Name</label>
             <input type="text" id="name" required>
         </div>
-        
+
         <div class="form-group">
             <label>Date of Birth</label>
             <input type="date" id="dob" required>
         </div>
-        
+
         <div class="form-group">
             <label>Qualification</label>
             <select id="qualification" required>
@@ -259,127 +245,111 @@ body {
                 <option>Post Graduate</option>
             </select>
         </div>
-        
+
         <div class="form-group">
             <label>Skills (comma separated)</label>
-            <textarea id="skills" rows="2" required>Communication, Computer Basics</textarea>
+            <textarea id="skills" rows="2">Communication, Computer Basics</textarea>
         </div>
-        
+
         <div class="form-group">
             <label>Experience (years)</label>
             <input type="number" id="experience" value="0">
         </div>
-        
+
         <button type="submit" class="button">🤖 Build Resume & Find Jobs</button>
     </form>
-    
-    <button class="button back-btn" onclick="showSection('home')">← Back to Home</button>
+
+    <button class="button back-btn" onclick="showSection('home')">← Back</button>
 </div>
 
-<!-- === JOBS SECTION === -->
+<!-- JOBS -->
 <div id="jobs" class="section">
     <h2>Matched Jobs for <span id="userName"></span></h2>
-    
-    <div id="jobList">
-        <!-- Jobs will appear here -->
-    </div>
-    
-    <button class="button back-btn" onclick="showSection('resume')">← Back to Resume</button>
+    <div id="jobList"></div>
+    <button class="button back-btn" onclick="showSection('resume')">← Back</button>
 </div>
 
-<!-- === NOTIFICATIONS SECTION === -->
+<!-- NOTIFICATIONS -->
 <div id="notifications" class="section">
     <h2>🔔 Notifications</h2>
-    
+
     <div class="notification">
         <strong>New Job Alert!</strong>
         <p>Software Engineer at TechCorp - 95% match</p>
         <small>2 hours ago</small>
     </div>
-    
+
     <div class="notification">
         <strong>Application Viewed</strong>
         <p>Google HR viewed your resume</p>
         <small>1 day ago</small>
     </div>
-    
+
     <div class="notification">
         <strong>Interview Scheduled</strong>
-        <p>Microsoft interview on 22th December</p>
+        <p>Microsoft interview on 25th October</p>
         <small>2 days ago</small>
     </div>
-    
-    <button class="button back-btn" onclick="showSection('home')">← Back to Home</button>
-</div>
-</div>
-<script>
-// === SIMPLE JAVASCRIPT ===
 
-// 1. Show/Hide Sections
-function showSection(sectionName) {
-    // Hide all sections
-    document.getElementById('home').classList.remove('active');
-    document.getElementById('resume').classList.remove('active');
-    document.getElementById('jobs').classList.remove('active');
-    document.getElementById('notifications').classList.remove('active');
-    
-    // Show selected section
-    document.getElementById(sectionName).classList.add('active');
+    <button class="button back-btn" onclick="showSection('home')">← Back</button>
+</div>
+
+</div>
+
+<script>
+// === Change Section ===
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
-// 2. Job Data
+// === Job Data ===
 const jobs = [
-    {title: "Frontend Developer", company: "TechCorp", match: 95, salary: "₹5-7 LPA", link: "https://example.com/job1"},
-    {title: "Data Entry Operator", company: "DataPlus", match: 88, salary: "₹3-4 LPA", link: "https://example.com/job2"},
-    {title: "Marketing Intern", company: "GrowthCo", match: 92, salary: "₹2-3 LPA", link: "https://example.com/job3"},
-    {title: "Customer Support", company: "ServiceFirst", match: 85, salary: "₹3-5 LPA", link: "https://example.com/job4"}
+    {title: "Frontend Developer", company: "TechCorp", match: 95, salary: "₹5–7 LPA", link: "https://example.com/job1"},
+    {title: "Data Entry Operator", company: "DataPlus", match: 88, salary: "₹3–4 LPA", link: "https://example.com/job2"},
+    {title: "Marketing Intern", company: "GrowthCo", match: 92, salary: "₹2–3 LPA", link: "https://example.com/job3"},
+    {title: "Customer Support", company: "ServiceFirst", match: 85, salary: "₹3–5 LPA", link: "https://example.com/job4"},
 ];
 
-// 3. Build Resume Function
+// === Build Resume ===
 function buildResume() {
-    // Get form values
     const name = document.getElementById('name').value;
-    const qualification = document.getElementById('qualification').value;
-    
-    // Show user name in jobs section
+
     document.getElementById('userName').textContent = name;
-    
-    // Generate job cards
-    let jobHTML = '';
+
+    let html = "";
     jobs.forEach(job => {
-        jobHTML += `
-            <div class="job-card">
-                <div class="job-title">${job.title}</div>
-                <span class="match-badge">${job.match}% Match</span>
-                <p><strong>Company:</strong> ${job.company}</p>
-                <p><strong>Salary:</strong> ${job.salary}</p>
-                <button class="button apply-btn" onclick="applyJob('${job.link}')">Apply Now</button>
-            </div>
-        `;
+        html += `
+        <div class="job-card">
+            <div class="job-title">${job.title}</div>
+            <span class="match-badge">${job.match}% Match</span>
+            <p><strong>Company:</strong> ${job.company}</p>
+            <p><strong>Salary:</strong> ${job.salary}</p>
+            <button class="button apply-btn" onclick="applyJob('${job.link}')">Apply Now</button>
+        </div>`;
     });
-    
-    document.getElementById('jobList').innerHTML = jobHTML;
-    
-    // Show jobs section
+
+    document.getElementById('jobList').innerHTML = html;
+
     showSection('jobs');
-    
-    // Reduce notification count
-    const count = document.querySelector('.bell-count');
-    count.textContent = parseInt(count.textContent) - 1;
+
+    // reduce notifications
+    const n = document.querySelector('.bell-count');
+    n.textContent = Math.max(0, parseInt(n.textContent) - 1);
 }
 
-// 4. Apply for Job
+// === Apply Function ===
 function applyJob(link) {
     if (confirm("You will be redirected to apply. Continue?")) {
-        window.open(link, '_blank');
+        window.open(link, "_blank");
     }
 }
 
-// 5. Set default date (20 years old)
-window.onload = function() {
-    const today = new Date();
-    const birthDate = new Date(today.getFullYear() - 20, today.getMonth(), today.getDate());
-    document.getElementById('dob').valueAsDate = birthDate;
+// === Default DOB (20 years old) ===
+window.onload = () => {
+    const t = new Date();
+    document.getElementById('dob').valueAsDate =
+        new Date(t.getFullYear() - 20, t.getMonth(), t.getDate());
 }
 </script>
 
