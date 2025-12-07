@@ -247,9 +247,31 @@ input, select, textarea {
         </div>
 
         <div class="form-group">
-            <label>Skills (comma separated)</label>
-            <textarea id="skills" rows="2">Communication, Computer Basics</textarea>
-        </div>
+    <label>Your Skills</label>
+    <select id="skills" multiple style="width:100%;height:100px;padding:10px;">
+        <option value="Computer Basics">💻 Computer Basics</option>
+        <option value="MS Excel">📊 MS Excel</option>
+        <option value="Internet">🌐 Internet</option>
+        <option value="Typing">⌨️ Typing</option>
+        <option value="English">🇬🇧 English</option>
+        <option value="Hindi">🇮🇳 Hindi</option>
+        <option value="Communication">💬 Communication</option>
+        <option value="Customer Service">😊 Customer Service</option>
+        <option value="Data Entry">📝 Data Entry</option>
+        <option value="Phone Handling">📞 Phone Handling</option>
+        <option value="Teaching">👩‍🏫 Teaching</option>
+        <option value="Driving">🚗 Driving</option>
+        <option value="Cooking">👨‍🍳 Cooking</option>
+        <option value="Social Media">📱 Social Media</option>
+        <option value="Video Editing">🎬 Video Editing</option>
+        <option value="Basic Coding">💻 Basic Coding</option>
+        <option value="Math">➕ Math</option>
+        <option value="Drawing">🎨 Drawing</option>
+        <option value="Team Work">🤝 Team Work</option>
+        <option value="Time Management">⏰ Time Management</option>
+    </select>
+    <small>Hold Ctrl to select multiple skills</small>
+</div>
 
         <div class="form-group">
             <label>Experience (years)</label>
@@ -303,37 +325,64 @@ function showSection(id) {
     document.getElementById(id).classList.add('active');
 }
 
-// === Job Data ===
+// === Simple Jobs ===
 const jobs = [
-    {title: "Frontend Developer", company: "TechCorp", match: 95, salary: "₹5–7 LPA", link: "https://example.com/job1"},
-    {title: "Data Entry Operator", company: "DataPlus", match: 88, salary: "₹3–4 LPA", link: "https://example.com/job2"},
-    {title: "Marketing Intern", company: "GrowthCo", match: 92, salary: "₹2–3 LPA", link: "https://example.com/job3"},
-    {title: "Customer Support", company: "ServiceFirst", match: 85, salary: "₹3–5 LPA", link: "https://example.com/job4"},
+    {title: "Data Entry", company: "Office", match: 0, salary: "₹2-3 LPA", skills: ["Computer Basics", "Typing", "MS Excel"]},
+    {title: "Customer Support", company: "Service", match: 0, salary: "₹2-4 LPA", skills: ["Communication", "English", "Phone Handling"]},
+    {title: "Sales Executive", company: "Sales", match: 0, salary: "₹3-5 LPA", skills: ["Communication", "Hindi", "Customer Service"]},
+    {title: "Computer Operator", company: "IT", match: 0, salary: "₹2-3 LPA", skills: ["Computer Basics", "Internet", "Typing"]},
+    {title: "Teacher Assistant", company: "School", match: 0, salary: "₹2-3 LPA", skills: ["Teaching", "English", "Communication"]},
+    {title: "Driver", company: "Transport", match: 0, salary: "₹3-4 LPA", skills: ["Driving"]},
+    {title: "Cook", company: "Restaurant", match: 0, salary: "₹2-3 LPA", skills: ["Cooking"]},
+    {title: "Social Media Manager", company: "Digital", match: 0, salary: "₹3-4 LPA", skills: ["Social Media", "Communication"]},
+    {title: "Video Editor", company: "Media", match: 0, salary: "₹3-5 LPA", skills: ["Video Editing", "Computer Basics"]},
+    {title: "Receptionist", company: "Hotel", match: 0, salary: "₹2-3 LPA", skills: ["Communication", "Computer Basics", "Phone Handling"]}
 ];
 
-// === Build Resume ===
+// === Build Resume - Simple ===
 function buildResume() {
     const name = document.getElementById('name').value;
-
+    const selected = document.getElementById('skills');
+    const userSkills = Array.from(selected.selectedOptions).map(opt => opt.value);
+    
+    if (userSkills.length === 0) {
+        alert("Please select at least 1 skill!");
+        return;
+    }
+    
     document.getElementById('userName').textContent = name;
-
+    
     let html = "";
+    
     jobs.forEach(job => {
-        html += `
-        <div class="job-card">
-            <div class="job-title">${job.title}</div>
-            <span class="match-badge">${job.match}% Match</span>
-            <p><strong>Company:</strong> ${job.company}</p>
-            <p><strong>Salary:</strong> ${job.salary}</p>
-            <button class="button apply-btn" onclick="applyJob('${job.link}')">Apply Now</button>
-        </div>`;
+        // Count matching skills
+        let match = 0;
+        userSkills.forEach(skill => {
+            if (job.skills.includes(skill)) match++;
+        });
+        
+        // If at least 1 skill matches, show job
+        if (match > 0) {
+            const matchPercent = 60 + (match * 10);
+            html += `
+            <div class="job-card">
+                <div class="job-title">${job.title}</div>
+                <span class="match-badge">${matchPercent}% Match</span>
+                <p><strong>Company:</strong> ${job.company}</p>
+                <p><strong>Salary:</strong> ${job.salary}</p>
+                <button class="button apply-btn" onclick="applyJob('#')">Apply Now</button>
+            </div>`;
+        }
     });
-
+    
+    if (html === "") {
+        html = `<div class="job-card">Try selecting different skills!</div>`;
+    }
+    
     document.getElementById('jobList').innerHTML = html;
-
     showSection('jobs');
-
-    // reduce notifications
+    
+    // Reduce notification
     const n = document.querySelector('.bell-count');
     n.textContent = Math.max(0, parseInt(n.textContent) - 1);
 }
