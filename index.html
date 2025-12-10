@@ -5,52 +5,295 @@
     <title>SPI Rojgar Solution</title>
 
 <style>
-/* === RESET === */
+/* === RESET & GLOBAL === */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+:root {
+    --primary: #2E86AB;
+    --primary-dark: #1a5f7a;
+    --secondary: #FF9800;
+    --accent: #4CAF50;
+    --accent-light: #8BC34A;
+    --dark: #333333;
+    --light: #f8f9fa;
+    --gray: #6c757d;
+    --light-gray: #e9ecef;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
     padding: 20px;
-    max-width: 100%;
-    overflow-x: hidden;
+    min-height: 100vh;
+    color: var(--dark);
 }
 
 .container {
-    width: 95%;
+    max-width: 1200px;
     margin: 0 auto;
+    display: none; /* Initially hidden for splash screen */
+}
+
+/* === SPLASH SCREEN === */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease;
+}
+
+.parent-company-splash {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.parent-logo-small {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.parent-name {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.splash-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    animation: fadeIn 1s ease;
+}
+
+.splash-icon {
+    width: 220px;
+    height: 220px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    animation: pulse 2s infinite;
+}
+
+.logo-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.splash-text {
+    text-align: center;
+    color: white;
+}
+
+.splash-text h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+    background: linear-gradient(to right, #ffffff, #e0f7fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.splash-text h2 {
+    font-size: 2.2rem;
+    font-weight: 300;
+    opacity: 0.95;
+    letter-spacing: 0.5px;
+}
+
+.splash-progress {
+    width: 300px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    margin-top: 50px;
+    overflow: hidden;
+    position: relative;
+}
+
+.splash-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    border-radius: 3px;
+    animation: smoothLoading 2.5s ease-in-out forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.splash-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 35px 80px rgba(0, 0, 0, 0.4); }
+    100% { transform: scale(1); box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3); }
+}
+
+@keyframes smoothLoading {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
 /* === HEADER === */
 .header {
-    background: #2E86AB;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 18px 25px;
+    border-radius: var(--border-radius);
     display: flex;
     align-items: center;
     margin-bottom: 30px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: shimmer 3s infinite;
+}
+
+.parent-company-header {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    padding-right: 20px;
+    border-right: 2px solid rgba(255,255,255,0.3);
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+    transition: var(--transition);
+    border-radius: 8px;
+    padding: 5px 10px;
+}
+
+.parent-company-header:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.parent-logo-header {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    margin-right: 12px;
+    border: 2px solid white;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: var(--transition);
+}
+
+.parent-logo-header:hover {
+    transform: rotate(5deg) scale(1.05);
+}
+
+.parent-text {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    color: white;
+}
+
+.app-brand {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    z-index: 1;
 }
 
 .logo {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
-    margin-right: 15px;
+    margin-right: 18px;
     border: 3px solid white;
+    object-fit: cover;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    transition: var(--transition);
+}
+
+.logo:hover {
+    transform: rotate(10deg);
 }
 
 .app-name h1 {
     font-size: 22px;
+    margin-bottom: 4px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .app-name p {
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.9;
+    font-weight: 300;
 }
 
 .bell-icon {
@@ -58,348 +301,1191 @@ body {
     font-size: 26px;
     cursor: pointer;
     position: relative;
-}
-
-.bell-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: red;
-    color: white;
-    font-size: 12px;
-    width: 20px;
-    height: 20px;
+    background: rgba(255,255,255,0.1);
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: var(--transition);
+    position: relative;
+    z-index: 1;
+}
+
+.bell-icon:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+.bell-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #ff5252, #ff1744);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    animation: pulse 1.5s infinite;
 }
 
 /* === SEARCH BAR === */
 .search-bar {
     background: white;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 18px;
+    border-radius: var(--border-radius);
     text-align: center;
     margin-bottom: 30px;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow);
     font-size: 18px;
+    font-weight: 600;
+    transition: var(--transition);
+    display: block;
+    border: 2px solid transparent;
+    color: var(--primary-dark);
+    position: relative;
+    overflow: hidden;
 }
 
 .search-bar:hover {
-    background: #e8f4f8;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary);
+}
+
+.search-bar::before {
+    content: '🔍';
+    margin-right: 10px;
+    font-size: 20px;
 }
 
 /* === SECTION === */
 .section {
     display: none;
     background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    margin-bottom: 25px;
+    animation: fadeIn 0.5s ease;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--light-gray);
 }
 
 .section.active {
     display: block;
 }
 
+.section h2 {
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--light-gray);
+    font-weight: 700;
+    font-size: 24px;
+}
+
+/* === CENTERED TITLE FOR RESUME === */
+#resume h2 {
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+#resume h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 2px;
+}
+
 /* === FORM === */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
-    font-weight: bold;
-    margin-bottom: 6px;
+    font-weight: 600;
+    margin-bottom: 8px;
     display: block;
+    color: var(--dark);
+    font-size: 15px;
 }
 
 input, select, textarea {
     width: 100%;
+    padding: 14px;
+    border: 2px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: var(--transition);
+    background: white;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
+}
+
+select[multiple] {
+    width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    height: 160px;
+    background: white;
 }
 
 /* === BUTTON === */
 .button {
     width: 100%;
-    padding: 12px;
-    background: #2E86AB;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
     border: none;
-    border-radius: 6px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 600;
     cursor: pointer;
     margin-top: 10px;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
 }
 
 .button:hover {
-    background: #1a5f7a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 134, 171, 0.3);
+}
+
+.button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.button:hover::after {
+    left: 100%;
 }
 
 .back-btn {
-    background: #666;
+    background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+.back-btn:hover {
+    box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+}
+
+.apply-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    width: auto;
+    padding: 10px 25px;
+    font-size: 15px;
+    border-radius: 6px;
+}
+
+.apply-btn:hover {
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
 }
 
 /* === JOB CARD === */
 .job-card {
-    border: 1px solid #ddd;
-    padding: 15px;
+    border: 1px solid var(--light-gray);
+    padding: 20px;
     border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     background: white;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary);
+}
+
+.job-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--primary), var(--accent));
 }
 
 .job-title {
-    color: #2E86AB;
-    font-size: 18px;
-    margin-bottom: 5px;
+    color: var(--primary-dark);
+    font-size: 20px;
+    margin-bottom: 8px;
+    font-weight: 700;
 }
 
 .match-badge {
     float: right;
-    background: #28a745;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
     color: white;
-    padding: 3px 12px;
-    font-size: 12px;
+    padding: 6px 15px;
+    font-size: 13px;
+    font-weight: 600;
     border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
 }
 
-.apply-btn {
-    width: auto;
-    margin-top: 10px;
-    background: #28a745;
+.job-card p {
+    margin: 8px 0;
+    color: var(--dark);
+    font-size: 15px;
+}
+
+.job-card strong {
+    color: var(--primary-dark);
+}
+
+/* === FILTERS CONTAINER === */
+.filters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    box-shadow: var(--shadow);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-group label::before {
+    content: '⚙️';
+    font-size: 12px;
+}
+
+.filter-group select {
+    padding: 12px;
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    transition: var(--transition);
+    color: #495057;
+}
+
+.filter-group select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.1);
+}
+
+.filter-group select:hover {
+    border-color: var(--primary);
 }
 
 /* === NOTIFICATION === */
 .notification {
-    border-left: 4px solid #2E86AB;
-    background: #f9f9f9;
-    padding: 12px;
+    border-left: 4px solid var(--primary);
+    background: linear-gradient(to right, #f8f9fa, white);
+    padding: 16px;
     margin-bottom: 15px;
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease;
+    transition: var(--transition);
+    border: 1px solid var(--light-gray);
 }
 
-/* === MOBILE FONT FIX === */
-@media (max-width: 600px) {
-    body, input, select, textarea, button {
+.notification:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow);
+}
+
+.notification.success {
+    border-left-color: var(--accent);
+    background: linear-gradient(to right, #f0fff4, white);
+}
+
+.notification.info {
+    border-left-color: var(--primary);
+    background: linear-gradient(to right, #f0f8ff, white);
+}
+
+.notification.warning {
+    border-left-color: var(--secondary);
+    background: linear-gradient(to right, #fff8f0, white);
+}
+
+.notification strong {
+    color: var(--dark);
+    font-size: 16px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.notification p {
+    color: var(--gray);
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.notification small {
+    color: #adb5bd;
+    font-size: 12px;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    
+    .header {
+        padding: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .parent-company-header {
+        margin-right: 15px;
+        padding-right: 15px;
+        border-right: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .parent-logo-header {
+        width: 35px;
+        height: 35px;
+        margin-right: 8px;
+    }
+    
+    .parent-text {
+        font-size: 10px;
+    }
+    
+    .logo {
+        width: 45px;
+        height: 45px;
+        margin-right: 12px;
+    }
+    
+    .app-name h1 {
+        font-size: 18px;
+    }
+    
+    .app-name p {
+        font-size: 11px;
+    }
+    
+    .bell-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+    }
+    
+    .section {
+        padding: 20px;
+    }
+    
+    .search-bar {
+        padding: 15px;
         font-size: 16px;
+    }
+    
+    .job-card {
+        padding: 15px;
+    }
+    
+    .job-title {
+        font-size: 18px;
+    }
+    
+    .match-badge {
+        font-size: 12px;
+        padding: 5px 12px;
+    }
+    
+    .filters-container {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    #resume h2 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .splash-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    .splash-text h2 {
+        font-size: 1.5rem;
+    }
+    
+    .splash-icon {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .parent-company-splash {
+        top: 15px;
+        left: 15px;
+        padding: 8px 12px;
+    }
+    
+    .parent-logo-small {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .header {
+        padding: 12px;
+    }
+    
+    .parent-company-header {
+        margin-right: 10px;
+        padding-right: 10px;
+    }
+    
+    .parent-text {
+        font-size: 9px;
+    }
+    
+    .app-name h1 {
+        font-size: 16px;
+    }
+    
+    .app-name p {
+        font-size: 10px;
+    }
+    
+    .bell-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .bell-count {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+    
+    .search-bar {
+        font-size: 15px;
+        padding: 12px;
+    }
+    
+    .section h2 {
+        font-size: 20px;
+    }
+    
+    input, select, textarea {
+        padding: 12px;
+        font-size: 15px;
+    }
+    
+    .button {
+        padding: 14px;
+        font-size: 16px;
+    }
+    
+    #resume h2 {
+        font-size: 20px;
     }
 }
 </style>
 </head>
 
 <body>
-<div class="container">
-
-<!-- HEADER -->
-<div class="header">
-    <img src="logo.png" class="logo" alt="SPI Logo">
+<!-- Splash Screen -->
+<div class="splash-screen" id="splashScreen">
+    <div class="parent-company-splash">
+        <img class="parent-logo-small" src="https://github.com/MAdak123/SPI-ROJGAR-SOLUTION/blob/main/SPI%20logo.jpg?raw=true" alt="SPI Authority">
+        <div class="parent-name">SPI Authority</div>
+    </div>
     
-    <div class="app-name">
-        <h1>SPI Rojgar Solution</h1>
-        <p>Your Gateway to Dream Jobs</p>
+    <div class="splash-logo">
+        <div class="splash-icon">
+            <img id="splashLogo" class="logo-image" src="https://github.com/MAdak123/SPI-ROJGAR-SOLUTION/blob/main/logo.png?raw=true" alt="SPI Rojgar Solution Logo">
+        </div>
+        <div class="splash-text">
+            <h1>SPI</h1>
+            <h2>Rojgar Solution</h2>
+        </div>
     </div>
-
-    <div class="bell-icon" onclick="showSection('notifications')">
-        🔔
-        <span class="bell-count">3</span>
+    <div class="splash-progress">
+        <div class="splash-progress-bar"></div>
     </div>
 </div>
 
-<!-- SEARCH BAR -->
-<div class="search-bar" onclick="showSection('resume')">
-    🔍 Click here to build AI Resume & Search Jobs
-</div>
-
-<!-- HOME -->
-<div id="home" class="section active">
-    <h2>Welcome!</h2>
-    <p>Build your AI-powered resume and get matched with the best jobs.</p>
-</div>
-
-<!-- RESUME BUILDER -->
-<div id="resume" class="section">
-    <h2>AI Resume Builder</h2>
-
-    <form id="resumeForm" onsubmit="buildResume(); return false;">
-        <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="name" required>
+<!-- Main App Container -->
+<div class="container" id="mainContainer">
+    <!-- HEADER -->
+    <div class="header">
+        <!-- Clickable SPI Authority logo linking to Facebook -->
+        <a href="https://www.facebook.com/spiharipal/" target="_blank" class="parent-company-header">
+            <img class="parent-logo-header" src="https://github.com/MAdak123/SPI-ROJGAR-SOLUTION/blob/main/SPI%20logo.jpg?raw=true" alt="SPI Authority">
+            <div class="parent-text">
+                SPI<br>Authority
+            </div>
+        </a>
+        
+        <div class="app-brand">
+            <img id="headerLogo" class="logo" src="https://github.com/MAdak123/SPI-ROJGAR-SOLUTION/blob/main/logo.png?raw=true" alt="SPI Logo">
+            
+            <div class="app-name">
+                <h1>SPI Rojgar Solution</h1>
+                <p>Your Gateway to Dream Jobs</p>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Date of Birth</label>
-            <input type="date" id="dob" required>
+        <div class="bell-icon" onclick="toggleNotifications()">
+            🔔
+            <span class="bell-count" id="bellCount">3</span>
         </div>
-
-        <div class="form-group">
-            <label>Qualification</label>
-            <select id="qualification" required>
-                <option value="">Select</option>
-                <option>10th Pass</option>
-                <option>12th Pass</option>
-                <option>Diploma</option>
-                <option>Graduate</option>
-                <option>Post Graduate</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-    <label>Your Skills</label>
-    <select id="skills" multiple style="width:100%;height:100px;padding:10px;">
-        <option value="Computer Basics">💻 Computer Basics</option>
-        <option value="MS Excel">📊 MS Excel</option>
-        <option value="Internet">🌐 Internet</option>
-        <option value="Typing">⌨️ Typing</option>
-        <option value="English">🇬🇧 English</option>
-        <option value="Hindi">🇮🇳 Hindi</option>
-        <option value="Communication">💬 Communication</option>
-        <option value="Customer Service">😊 Customer Service</option>
-        <option value="Data Entry">📝 Data Entry</option>
-        <option value="Phone Handling">📞 Phone Handling</option>
-        <option value="Teaching">👩‍🏫 Teaching</option>
-        <option value="Driving">🚗 Driving</option>
-        <option value="Cooking">👨‍🍳 Cooking</option>
-        <option value="Social Media">📱 Social Media</option>
-        <option value="Video Editing">🎬 Video Editing</option>
-        <option value="Basic Coding">💻 Basic Coding</option>
-        <option value="Math">➕ Math</option>
-        <option value="Drawing">🎨 Drawing</option>
-        <option value="Team Work">🤝 Team Work</option>
-        <option value="Time Management">⏰ Time Management</option>
-    </select>
-    <small>Hold Ctrl to select multiple skills</small>
-</div>
-
-        <div class="form-group">
-            <label>Experience (years)</label>
-            <input type="number" id="experience" value="0">
-        </div>
-
-        <button type="submit" class="button">🤖 Build Resume & Find Jobs</button>
-    </form>
-
-    <button class="button back-btn" onclick="showSection('home')">← Back</button>
-</div>
-
-<!-- JOBS -->
-<div id="jobs" class="section">
-    <h2>Matched Jobs for <span id="userName"></span></h2>
-    <div id="jobList"></div>
-    <button class="button back-btn" onclick="showSection('resume')">← Back</button>
-</div>
-
-<!-- NOTIFICATIONS -->
-<div id="notifications" class="section">
-    <h2>🔔 Notifications</h2>
-
-    <div class="notification">
-        <strong>New Job Alert!</strong>
-        <p>Software Engineer at TechCorp - 95% match</p>
-        <small>2 hours ago</small>
     </div>
 
-    <div class="notification">
-        <strong>Application Viewed</strong>
-        <p>Google HR viewed your resume</p>
-        <small>1 day ago</small>
+    <!-- SEARCH BAR - Hidden in resume section -->
+    <div class="search-bar" id="searchBar" onclick="showSection('resume')">
+        Click here to build AI Resume & Search Jobs
     </div>
 
-    <div class="notification">
-        <strong>Interview Scheduled</strong>
-        <p>Microsoft interview on 22nd December</p>
-        <small>2 days ago</small>
+    <!-- HOME -->
+    <div id="home" class="section active">
+        <h2>Welcome to SPI Rojgar Solution!</h2>
+        <p>Build your Al resume and get matched with perfect jobs. Click the search bar above to start.</p>
+        
     </div>
 
-    <button class="button back-btn" onclick="showSection('home')">← Back</button>
-</div>
+    <!-- RESUME BUILDER -->
+    <div id="resume" class="section">
+        <h2>AI Resume Builder</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">Fill in your details to create a smart resume and find matching jobs</p>
 
+        <form id="resumeForm" onsubmit="buildResume(); return false;">
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="name" required placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+                <label>Date of Birth *</label>
+                <input type="date" id="dob" required>
+                <small style="color: #666;">You must be at least 18 years old to use this service</small>
+            </div>
+
+            <div class="form-group">
+                <label>Qualification *</label>
+                <select id="qualification" required>
+                    <option value="">Select your highest qualification</option>
+                    <option>10th Pass</option>
+                    <option>12th Pass</option>
+                    <option>Diploma</option>
+                    <option>Graduate</option>
+                    <option>Post Graduate</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Select Your Skills: *</label>
+                <select id="skills" multiple size="5" required>
+                    <option value="Computer">Computer Basics</option>
+                    <option value="Excel">Microsoft Excel</option>
+                    <option value="Internet">Internet & Email</option>
+                    <option value="Typing">Typing (English/Hindi)</option>
+                    <option value="English">English Communication</option>
+                    <option value="Hindi">Hindi Communication</option>
+                    <option value="Communication">General Communication</option>
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="Data Entry">Data Entry</option>
+                    <option value="Phone">Phone Handling</option>
+                    <option value="Teaching">Teaching/Tutoring</option>
+                    <option value="Driving">Driving (2/4 Wheeler)</option>
+                    <option value="Cooking">Cooking</option>
+                    <option value="Social Media">Social Media Management</option>
+                    <option value="Video Editing">Video Editing</option>
+                    <option value="Coding">Basic Coding</option>
+                    <option value="Math">Mathematics</option>
+                    <option value="Drawing">Drawing/Art</option>
+                    <option value="Team Work">Team Work</option>
+                    <option value="Time Management">Time Management</option>
+                </select>
+                <small>Hold Ctrl/Cmd to select multiple skills or tap on mobile</small>
+            </div>
+
+            <div class="form-group">
+                <label>Experience (years)</label>
+                <input type="number" id="experience" value="0" min="0" max="50" placeholder="Years of experience">
+            </div>
+
+            <button type="submit" class="button">🤖 Build Resume & Find Jobs</button>
+        </form>
+
+        <button class="button back-btn" onclick="showSection('home')">← Back to Home</button>
+    </div>
+
+    <!-- JOBS -->
+    <div id="jobs" class="section">
+        <h2>Matched Jobs for <span id="userName"></span></h2>
+        
+        <!-- FILTERS SECTION -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <label>Filter by Match %:</label>
+                <select id="matchFilter" onchange="applyFilters()">
+                    <option value="0">All Jobs</option>
+                    <option value="50">50%+ Match</option>
+                    <option value="70">70%+ Match</option>
+                    <option value="80">80%+ Match</option>
+                    <option value="90">90%+ Match</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Sort by:</label>
+                <select id="sortFilter" onchange="applyFilters()">
+                    <option value="match">Highest Match</option>
+                    <option value="salary-high">Highest Salary</option>
+                    <option value="salary-low">Lowest Salary</option>
+                    <option value="title">Job Title A-Z</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Salary Range:</label>
+                <select id="salaryFilter" onchange="applyFilters()">
+                    <option value="all">All Salaries</option>
+                    <option value="0-2">₹0-2 LPA</option>
+                    <option value="2-3">₹2-3 LPA</option>
+                    <option value="3-4">₹3-4 LPA</option>
+                    <option value="4-5">₹4-5 LPA</option>
+                    <option value="5+">₹5+ LPA</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Experience Level:</label>
+                <select id="experienceFilter" onchange="applyFilters()">
+                    <option value="all">All Levels</option>
+                    <option value="entry">Entry Level (0-2 yrs)</option>
+                    <option value="mid">Mid Level (3-5 yrs)</option>
+                    <option value="senior">Senior (5+ yrs)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="jobList"></div>
+        <button class="button back-btn" onclick="showSection('resume')">← Back to Resume</button>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="notifications" class="section">
+        <h2>🔔 Notifications</h2>
+        <div id="notificationsList"></div>
+        <button class="button back-btn" onclick="goBackFromNotifications()">← Back</button>
+    </div>
 </div>
 
 <script>
-// === Change Section ===
-function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
-
-// === Simple Jobs ===
+// Jobs with required skills, real application URLs, and salary ranges
 const jobs = [
-    {title: "Data Entry", company: "Office", match: 0, salary: "₹2-3 LPA", skills: ["Computer Basics", "Typing", "MS Excel"]},
-    {title: "Customer Support", company: "Service", match: 0, salary: "₹2-4 LPA", skills: ["Communication", "English", "Phone Handling"]},
-    {title: "Sales Executive", company: "Sales", match: 0, salary: "₹3-5 LPA", skills: ["Communication", "Hindi", "Customer Service"]},
-    {title: "Computer Operator", company: "IT", match: 0, salary: "₹2-3 LPA", skills: ["Computer Basics", "Internet", "Typing"]},
-    {title: "Teacher Assistant", company: "School", match: 0, salary: "₹2-3 LPA", skills: ["Teaching", "English", "Communication"]},
-    {title: "Driver", company: "Transport", match: 0, salary: "₹3-4 LPA", skills: ["Driving"]},
-    {title: "Cook", company: "Restaurant", match: 0, salary: "₹2-3 LPA", skills: ["Cooking"]},
-    {title: "Social Media Manager", company: "Digital", match: 0, salary: "₹3-4 LPA", skills: ["Social Media", "Communication"]},
-    {title: "Video Editor", company: "Media", match: 0, salary: "₹3-5 LPA", skills: ["Video Editing", "Computer Basics"]},
-    {title: "Receptionist", company: "Hotel", match: 0, salary: "₹2-3 LPA", skills: ["Communication", "Computer Basics", "Phone Handling"]}
+    {title: "Data Entry Operator", company: "Office Solutions", salary: "₹2-3 LPA", minSalary: 2, maxSalary: 3, required: ["Computer", "Typing", "Data Entry"], url: "https://www.naukri.com/data-entry-jobs", category: "office"},
+    {title: "Customer Support Executive", company: "Service Hub", salary: "₹2-4 LPA", minSalary: 2, maxSalary: 4, required: ["Communication", "English", "Phone", "Customer Service"], url: "https://www.naukri.com/customer-service-jobs", category: "customer-service"},
+    {title: "Sales Executive", company: "SalesCorp", salary: "₹3-5 LPA", minSalary: 3, maxSalary: 5, required: ["Communication", "Hindi", "Customer Service"], url: "https://www.naukri.com/sales-executive-jobs", category: "sales"},
+    {title: "Computer Operator", company: "IT Solutions", salary: "₹2-3 LPA", minSalary: 2, maxSalary: 3, required: ["Computer", "Excel", "Internet"], url: "https://www.naukri.com/computer-operator-jobs", category: "it"},
+    {title: "Professional Driver", company: "City Transport", salary: "₹3-4 LPA", minSalary: 3, maxSalary: 4, required: ["Driving"], url: "https://www.naukri.com/driver-jobs", category: "transport"},
+    {title: "School Teacher", company: "Bright School", salary: "₹2-3 LPA", minSalary: 2, maxSalary: 3, required: ["Teaching", "English", "Communication"], url: "https://www.naukri.com/teacher-jobs", category: "education"},
+    {title: "Social Media Manager", company: "Digital Media Co.", salary: "₹3-4 LPA", minSalary: 3, maxSalary: 4, required: ["Social Media", "Computer", "Communication"], url: "https://www.naukri.com/social-media-jobs", category: "digital"},
+    {title: "Video Editor", company: "Media Studio", salary: "₹3-5 LPA", minSalary: 3, maxSalary: 5, required: ["Video Editing", "Computer"], url: "https://www.naukri.com/video-editor-jobs", category: "creative"},
+    {title: "Head Cook", company: "Food Palace", salary: "₹2-3 LPA", minSalary: 2, maxSalary: 3, required: ["Cooking"], url: "https://www.naukri.com/cook-jobs", category: "hospitality"},
+    {title: "Front Desk Receptionist", company: "Grand Hotel", salary: "₹2-3 LPA", minSalary: 2, maxSalary: 3, required: ["Communication", "Phone", "Computer"], url: "https://www.naukri.com/receptionist-jobs", category: "admin"},
+    {title: "Senior Software Engineer", company: "TechCorp", salary: "₹8-12 LPA", minSalary: 8, maxSalary: 12, required: ["Coding", "Computer", "English", "Communication", "Team Work"], url: "https://www.naukri.com/software-engineer-jobs", category: "it"},
+    {title: "Marketing Manager", company: "Brand Solutions", salary: "₹6-9 LPA", minSalary: 6, maxSalary: 9, required: ["Communication", "Social Media", "Team Work", "English"], url: "https://www.naukri.com/marketing-jobs", category: "marketing"},
+    {title: "Accountant", company: "Finance Plus", salary: "₹4-6 LPA", minSalary: 4, maxSalary: 6, required: ["Excel", "Computer", "Math", "Time Management"], url: "https://www.naukri.com/accountant-jobs", category: "finance"},
+    {title: "Content Writer", company: "Content Creators", salary: "₹3-4 LPA", minSalary: 3, maxSalary: 4, required: ["English", "Communication", "Writing", "Internet"], url: "https://www.naukri.com/content-writer-jobs", category: "creative"},
+    {title: "Delivery Executive", company: "Quick Delivery", salary: "₹2-3 LPA", minSalary: 2, maxSalary: 3, required: ["Driving", "Communication", "Time Management"], url: "https://www.naukri.com/delivery-jobs", category: "logistics"}
 ];
 
-// === Build Resume - Simple ===
+// Array to store notifications
+let notifications = [
+    {id: 1, title: "Welcome to SPI Rojgar Solution!", message: "Start building your resume to find matching jobs", time: getCurrentTime(), type: "info", read: false},
+    {id: 2, title: "Complete Your Profile", message: "Add your skills and qualifications for better job matches", time: getCurrentTime(-30), type: "info", read: false},
+    {id: 3, title: "New Feature Added", message: "AI Resume Builder is now available", time: getCurrentTime(-120), type: "info", read: true}
+];
+
+// Store filtered jobs globally
+let currentMatchedJobs = [];
+
+// Track previous section and notification toggle state
+let previousSection = "home";
+let isNotificationsActive = false;
+
+// Function to get current time
+function getCurrentTime() {
+    const now = new Date();
+    const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+    const dateOptions = { day: 'numeric', month: 'short' };
+    
+    const timeString = now.toLocaleTimeString('en-US', timeOptions);
+    const dateString = now.toLocaleDateString('en-US', dateOptions);
+    
+    return `${timeString}, ${dateString}`;
+}
+
+// Function to calculate age from date of birth
+function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    
+    // Adjust age if birthday hasn't occurred this year
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    
+    return age;
+}
+
+// Function to change section
+function showSection(id, skipHistory = false) {
+    const currentActive = document.querySelector('.section.active');
+    const currentId = currentActive ? currentActive.id : 'home';
+    
+    // If we're not skipping history update and we're not going to notifications
+    if (!skipHistory && currentId !== 'notifications') {
+        previousSection = currentId;
+    }
+    
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    
+    // Show selected section
+    document.getElementById(id).classList.add('active');
+    
+    // Update notification status
+    isNotificationsActive = (id === 'notifications');
+    
+    // Show/hide search bar based on current section
+    const searchBar = document.getElementById('searchBar');
+    if (id === 'resume' || id === 'jobs' || id === 'notifications') {
+        searchBar.style.display = 'none';
+    } else {
+        searchBar.style.display = 'block';
+    }
+    
+    // Mark notifications as read when viewing them
+    if (id === 'notifications') {
+        markNotificationsAsRead();
+    }
+}
+
+// Function to toggle notifications
+function toggleNotifications() {
+    const currentActive = document.querySelector('.section.active');
+    const currentId = currentActive ? currentActive.id : 'home';
+    
+    if (currentId === 'notifications') {
+        // If currently in notifications, go back to previous section
+        showSection(previousSection, true);
+    } else {
+        // If not in notifications, store current section and show notifications
+        previousSection = currentId;
+        showSection('notifications', true);
+    }
+}
+
+// Function to go back from notifications
+function goBackFromNotifications() {
+    showSection(previousSection, true);
+}
+
+// Function to mark notifications as read
+function markNotificationsAsRead() {
+    let updated = false;
+    notifications.forEach(notification => {
+        if (!notification.read) {
+            notification.read = true;
+            updated = true;
+        }
+    });
+    
+    if (updated) {
+        updateBellCount();
+    }
+}
+
+// Function to render notifications
+function renderNotifications() {
+    const container = document.getElementById('notificationsList');
+    container.innerHTML = '';
+    
+    if (notifications.length === 0) {
+        container.innerHTML = '<p style="text-align: center; padding: 20px; color: #666;">No notifications yet.</p>';
+        return;
+    }
+    
+    // Sort notifications by time (newest first)
+    const sortedNotifications = [...notifications].sort((a, b) => b.id - a.id);
+    
+    sortedNotifications.forEach(notification => {
+        const notificationDiv = document.createElement('div');
+        notificationDiv.className = `notification ${notification.type}`;
+        if (!notification.read) {
+            notificationDiv.style.background = 'linear-gradient(to right, #e3f2fd, white)';
+        }
+        notificationDiv.innerHTML = `
+            <strong>${notification.title}</strong>
+            <p style="margin: 8px 0; color: #555;">${notification.message}</p>
+            <small style="color: #888;">${notification.time}</small>
+        `;
+        container.appendChild(notificationDiv);
+    });
+    
+    updateBellCount();
+}
+
+// Function to update bell count
+function updateBellCount() {
+    const unreadCount = notifications.filter(n => !n.read).length;
+    const bellCount = document.getElementById('bellCount');
+    
+    if (unreadCount > 0) {
+        bellCount.textContent = unreadCount;
+        bellCount.style.display = 'flex';
+    } else {
+        bellCount.style.display = 'none';
+    }
+}
+
+// Function to add a new notification
+function addNotification(title, message, type = "info") {
+    const newId = notifications.length > 0 ? Math.max(...notifications.map(n => n.id)) + 1 : 1;
+    
+    const newNotification = {
+        id: newId,
+        title: title,
+        message: message,
+        time: getCurrentTime(),
+        type: type,
+        read: false
+    };
+    
+    notifications.unshift(newNotification); // Add to beginning
+    renderNotifications();
+}
+
+// Function to apply filters
+function applyFilters() {
+    const matchFilter = parseInt(document.getElementById('matchFilter').value) || 0;
+    const sortFilter = document.getElementById('sortFilter').value;
+    const salaryFilter = document.getElementById('salaryFilter').value;
+    const experienceFilter = document.getElementById('experienceFilter').value;
+    
+    let filteredJobs = [...currentMatchedJobs];
+    
+    // Filter by match percentage
+    if (matchFilter > 0) {
+        filteredJobs = filteredJobs.filter(job => job.match >= matchFilter);
+    }
+    
+    // Filter by salary range
+    if (salaryFilter !== 'all') {
+        filteredJobs = filteredJobs.filter(job => {
+            if (salaryFilter === '0-2') {
+                return job.minSalary <= 2;
+            } else if (salaryFilter === '2-3') {
+                return job.minSalary >= 2 && job.minSalary <= 3;
+            } else if (salaryFilter === '3-4') {
+                return job.minSalary >= 3 && job.minSalary <= 4;
+            } else if (salaryFilter === '4-5') {
+                return job.minSalary >= 4 && job.minSalary <= 5;
+            } else if (salaryFilter === '5+') {
+                return job.minSalary >= 5;
+            }
+            return true;
+        });
+    }
+    
+    // Filter by experience level
+    if (experienceFilter !== 'all') {
+        filteredJobs = filteredJobs.filter(job => {
+            const title = job.title.toLowerCase();
+            const salary = job.minSalary;
+            
+            switch(experienceFilter) {
+                case 'entry':
+                    // Entry level: lower salary, basic job titles
+                    return salary <= 3 || 
+                           title.includes('operator') || 
+                           title.includes('data entry') || 
+                           title.includes('receptionist') ||
+                           title.includes('driver') ||
+                           title.includes('cook') ||
+                           title.includes('delivery');
+                case 'mid':
+                    // Mid level: medium salary, executive/manager titles
+                    return (salary >= 3 && salary <= 6) ||
+                           title.includes('executive') || 
+                           title.includes('support') || 
+                           title.includes('manager') ||
+                           title.includes('teacher') ||
+                           title.includes('accountant') ||
+                           title.includes('writer');
+                case 'senior':
+                    // Senior level: higher salary, senior/head titles
+                    return salary >= 6 ||
+                           title.includes('senior') || 
+                           title.includes('head') || 
+                           title.includes('lead') ||
+                           title.includes('manager') && salary >= 5;
+                default:
+                    return true;
+            }
+        });
+    }
+    
+    // Sort jobs
+    filteredJobs.sort((a, b) => {
+        switch(sortFilter) {
+            case 'salary-high':
+                // Sort by highest salary (maxSalary)
+                return b.maxSalary - a.maxSalary;
+            case 'salary-low':
+                // Sort by lowest salary (minSalary)
+                return a.minSalary - b.minSalary;
+            case 'title':
+                // Sort alphabetically by title
+                return a.title.localeCompare(b.title);
+            default: // 'match'
+                // Sort by match percentage (default)
+                return b.match - a.match;
+        }
+    });
+    
+    // Display filtered jobs
+    displayJobs(filteredJobs);
+}
+
+// Function to display jobs
+function displayJobs(jobs) {
+    let html = "";
+    
+    if (jobs.length === 0) {
+        html = `<div class="job-card">
+            <h3 style="color: #666; margin-bottom: 10px;">No Jobs Found</h3>
+            <p>No jobs match your current filters. Try adjusting your filter criteria.</p>
+            <p><strong>Tip:</strong> Lower the match percentage or select "All Salaries" to see more options.</p>
+            <button class="button" onclick="resetFilters()" style="margin-top: 10px;">Reset All Filters</button>
+        </div>`;
+    } else {
+        html += `<p style="margin-bottom: 15px; color: #666; font-size: 14px;">Showing ${jobs.length} job${jobs.length !== 1 ? 's' : ''} matching your criteria</p>`;
+        
+        jobs.forEach(job => {
+            
+            html += `
+            <div class="job-card">
+                <div class="job-title">${job.title} </div>
+                <span class="match-badge">${job.match}% Match</span>
+                <p><strong>Company:</strong> ${job.company}</p>
+                <p><strong>Salary:</strong> ${job.salary} <small>(Range: ₹${job.minSalary}-${job.maxSalary} LPA)</small></p>
+                <p><small><strong>Required Skills:</strong> ${job.required.join(', ')}</small></p>
+                <p><small><strong>Your Matched Skills:</strong> ${job.matchedSkills.join(', ')}</small></p>
+                <button class="button apply-btn" onclick="applyJob('${job.title}', '${job.url}')">Apply Now</button>
+            </div>`;
+        });
+    }
+    
+    document.getElementById('jobList').innerHTML = html;
+}
+
+// Function to reset all filters
+function resetFilters() {
+    document.getElementById('matchFilter').value = '0';
+    document.getElementById('sortFilter').value = 'match';
+    document.getElementById('salaryFilter').value = 'all';
+    document.getElementById('experienceFilter').value = 'all';
+    applyFilters();
+}
+
+// Function to build resume and find matching jobs
 function buildResume() {
     const name = document.getElementById('name').value;
-    const selected = document.getElementById('skills');
-    const userSkills = Array.from(selected.selectedOptions).map(opt => opt.value);
+    const dob = document.getElementById('dob').value;
+    const qualification = document.getElementById('qualification').value;
+    const select = document.getElementById('skills');
+    const experience = document.getElementById('experience').value;
+    const selectedSkills = [];
     
-    if (userSkills.length === 0) {
+    // Get selected skills
+    for (let option of select.options) {
+        if (option.selected) {
+            selectedSkills.push(option.value);
+        }
+    }
+    
+    // Validate age (must be 18 or older)
+    if (dob) {
+        const age = calculateAge(dob);
+        if (age < 18) {
+            alert("Sorry! You must be at least 18 years old to use this job portal.");
+            return false;
+        }
+    } else {
+        alert("Please enter your date of birth.");
+        return false;
+    }
+    
+    if (selectedSkills.length === 0) {
         alert("Please select at least 1 skill!");
-        return;
+        return false;
+    }
+    
+    if (!name) {
+        alert("Please enter your name!");
+        return false;
+    }
+    
+    if (!qualification) {
+        alert("Please select your qualification!");
+        return false;
     }
     
     document.getElementById('userName').textContent = name;
     
-    let html = "";
+    // Calculate matches
+    let matchedJobs = [];
     
     jobs.forEach(job => {
-        // Count matching skills
-        let match = 0;
-        userSkills.forEach(skill => {
-            if (job.skills.includes(skill)) match++;
+        let matchCount = 0;
+        let matchSkills = [];
+        
+        // Check each required skill
+        job.required.forEach(reqSkill => {
+            if (selectedSkills.includes(reqSkill)) {
+                matchCount++;
+                matchSkills.push(reqSkill);
+            }
         });
         
-        // If at least 1 skill matches, show job
-        if (match > 0) {
-            const matchPercent = 60 + (match * 10);
-            html += `
-            <div class="job-card">
-                <div class="job-title">${job.title}</div>
-                <span class="match-badge">${matchPercent}% Match</span>
-                <p><strong>Company:</strong> ${job.company}</p>
-                <p><strong>Salary:</strong> ${job.salary}</p>
-                <button class="button apply-btn" onclick="applyJob('#')">Apply Now</button>
-            </div>`;
+        // If at least one skill matches
+        if (matchCount > 0) {
+            const matchPercent = Math.min(95, Math.floor((matchCount / job.required.length) * 100));
+            matchedJobs.push({
+                ...job,
+                match: matchPercent,
+                matchedSkills: matchSkills
+            });
         }
     });
     
-    if (html === "") {
-        html = `<div class="job-card">Try selecting different skills!</div>`;
-    }
+    // Store in global variable
+    currentMatchedJobs = matchedJobs;
     
-    document.getElementById('jobList').innerHTML = html;
+    // Reset filters
+    resetFilters();
+    
+    // Show jobs section
     showSection('jobs');
     
-    // Reduce notification
-    const n = document.querySelector('.bell-count');
-    n.textContent = Math.max(0, parseInt(n.textContent) - 1);
+    // Add notification after resume is completed
+    const jobCount = matchedJobs.length;
+    const topMatch = matchedJobs.length > 0 ? matchedJobs[0].match : 0;
+    
+    let notificationMessage = "";
+    let notificationType = "info";
+    
+    if (jobCount === 0) {
+        notificationMessage = "We couldn't find matching jobs. Try adding more skills to your resume.";
+        notificationType = "warning";
+    } else if (jobCount === 1) {
+        notificationMessage = `We found 1 matching job for you with ${topMatch}% match!`;
+        notificationType = "success";
+    } else {
+        notificationMessage = `Great! We found ${jobCount} matching jobs for you. Top match: ${topMatch}%.`;
+        notificationType = "success";
+    }
+    
+    addNotification("Resume Completed!", notificationMessage, notificationType);
+    
+    return false; // Prevent form submission
 }
 
-// === Apply Function ===
-function applyJob(link) {
-    if (confirm("You will be redirected to apply. Continue?")) {
-        window.open(link, "_blank");
+// Function to apply for job with real URL
+function applyJob(jobTitle, jobUrl) {
+    if (confirm(`You will be redirected to apply for "${jobTitle}" on Naukri.com. Continue?`)) {
+        // Open job application website in new tab
+        window.open(jobUrl, "_blank");
+        
+        // Add notification about application
+        addNotification("Application Started", `You are applying for: ${jobTitle}`, "info");
     }
 }
 
-// === Default DOB (20 years old) ===
-window.onload = () => {
+// Initialize the app
+function initApp() {
+    // Set default DOB (22 years old as default for demo)
     const t = new Date();
-    document.getElementById('dob').valueAsDate =
-        new Date(t.getFullYear() - 20, t.getMonth(), t.getDate());
+    const defaultDate = new Date(t.getFullYear() - 22, t.getMonth(), t.getDate());
+    document.getElementById('dob').valueAsDate = defaultDate;
+    
+    // Handle splash screen
+    const splashScreen = document.getElementById('splashScreen');
+    const mainContainer = document.getElementById('mainContainer');
+    
+    // Initialize notifications
+    renderNotifications();
+    
+    setTimeout(() => {
+        splashScreen.style.opacity = '0';
+        setTimeout(() => {
+            splashScreen.style.display = 'none';
+            mainContainer.style.display = 'block';
+        }, 500);
+    }, 3000);
 }
+
+// Initialize when page loads
+window.onload = initApp;
 </script>
 
 </body>
